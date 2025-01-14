@@ -36,6 +36,9 @@ def calculateVertex(p1, p2, l1, l2) -> tuple:
 
     vertexAngle = (vecToAngle(vertexBaseToP1) + vecToAngle(vertexBaseToP2)) / 2
 
+    if p1[1] >= p2[1]:
+        vertexAngle = math.radians(math.degrees(vertexAngle) + 180)
+
     vertexDist = math.sqrt(abs(l1**2 - newDist ** 2))
 
     vertex = (vertexBase[0] + math.cos(vertexAngle) * vertexDist, vertexBase[1] + math.sin(vertexAngle) * vertexDist)

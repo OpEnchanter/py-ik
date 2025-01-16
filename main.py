@@ -63,20 +63,24 @@ def solveIk(p1, p2, l1, l2) -> tuple:
 
     drawEnd = (vertex[0] + drawEnd[0] * l2, vertex[1] + drawEnd[1] * l2)
 
-    pygame.draw.line(window, (0,0,0), p1, vertex, 5)
-    pygame.draw.line(window, (0,0,0), vertex, drawEnd, 5)
+    pygame.draw.line(window, (55,55,55), p1, vertex, 10)
+    pygame.draw.line(window, (55,55,55), vertex, drawEnd, 10)
 
-    pygame.draw.circle(window, (255, 0, 0), vertex, 5)
-    pygame.draw.circle(window, (0, 255, 0), p1, 5)
-    pygame.draw.circle(window, (0, 0, 255), drawEnd, 5)
+    pygame.draw.circle(window, (45, 45, 45), vertex, 7.5)
+    pygame.draw.circle(window, (45, 45, 45), p1, 7.5)
+    pygame.draw.circle(window, (45, 45, 45), drawEnd, 7.5)
 
     return drawEnd
 
 length1 = 100
 length2 = 100
 
-target = pygame.mouse.get_pos()
+target = (320, 200)
 base = (240, 240)
+
+ikTarget = (320, 240)
+
+targetIndicator = target
 
 while True:
     for event in pygame.event.get():
@@ -84,21 +88,24 @@ while True:
             pygame.quit()
             sys.exit()
 
-    window.fill((255, 255, 255))
-    
-    target = (target[0] + calculateVector(target, pygame.mouse.get_pos())[0] / 1, target[1] + calculateVector(target, pygame.mouse.get_pos())[1] / 1)
-    
-    if pygame.key.get_pressed()[pygame.K_w]:
-        base = (base[0], base[1] - 0.1)
-    if pygame.key.get_pressed()[pygame.K_s]:
-        base = (base[0], base[1] + 0.1)
+    window.fill((15, 15, 15))
 
-    if pygame.key.get_pressed()[pygame.K_a]:
-        base = (base[0] - 0.1, base[1])
-    if pygame.key.get_pressed()[pygame.K_d]:
-        base = (base[0] + 0.1, base[1])
+    if ikTarget[0] >= 319:
+        target = (240, 200)
+    if ikTarget[0] <= 241:
+        target = (320, 240)
 
-    firstEnd = solveIk(base, target, 50, 50)
+    tvec = calculateVector(ikTarget, target)
+    ikTarget = (ikTarget[0] + tvec[0] / 3000, ikTarget[1] + tvec[1] / 3000)
+
+    pygame.draw.rect(window, (10, 10, 10), (0, 240, 480, 240))
+
+    solveIk(base, ikTarget, 50, 50)
+
+    tvec = calculateVector(targetIndicator, target)
+    targetIndicator = (targetIndicator[0] + tvec[0] / 1000, targetIndicator[1] + tvec[1] / 1000)
+
+    pygame.draw.circle(window, (255, 0, 0), targetIndicator, 4)
 
 
     pygame.display.flip()
